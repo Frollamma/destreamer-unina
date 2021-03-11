@@ -15,7 +15,6 @@ import isElevated from 'is-elevated';
 import puppeteer from 'puppeteer';
 import { ApiClient } from './ApiClient';
 
-
 const { FFmpegCommand, FFmpegInput, FFmpegOutput } = require('@tedconf/fessonia')();
 const tokenCache: TokenCache = new TokenCache();
 export const chromeCacheFolder = '.chrome_data';
@@ -44,7 +43,7 @@ async function init(): Promise<void> {
 }
 
 
-async function DoInteractiveLogin(url: string, username?: string): Promise<Session> {
+async function DoInteractiveLogin(url: string, username?: string, password?: string): Promise<Session> {
 
     logger.info('Launching headless Chrome to perform the OpenID Connect dance...');
 
@@ -60,7 +59,8 @@ async function DoInteractiveLogin(url: string, username?: string): Promise<Sessi
     });
     const page: puppeteer.Page = (await browser.pages())[0];
 
-    logger.info('Navigating to login page...');
+    // Logging in Microsoft
+    logger.info('Navigating to Microsoft login page...');
     await page.goto(url, { waitUntil: 'load' });
 
     try {
@@ -81,7 +81,40 @@ async function DoInteractiveLogin(url: string, username?: string): Promise<Sessi
         remember the credentials or it could still prompt the user for a password */
     }
 
+    // Logging in Unina
+    try {
+        if (username && password) {
+            // Loading page
+            await page.waitForSelector('input[type="text"]', {timeout: 15000});
+	    
+	    // Typing username
+	    await page.click('input[type="text"]');
+            await page.keyboard.type(username);
+	    
+	    // Typing password
+            await page.click('input[type="password"]');
+            await page.keyboard.type(password);
+
+	    // Signing in
+	    await page.click('input[type="submit"]');
+        }
+        else {
+            /* If a unina username and password were not provided we let the user take actions that
+            lead up to the video page. */
+        }
+    }
+    catch (e) {
+        // There's no unina login page, let the user do the rest...
+    }
+
+    // Handling the rest of Microsoft
+    await browser.waitForTarget(target => target.url().includes("login.microsoftonline.com/"), { timeout: 150000 });
+    await page.waitForSelector('input[type="button"]', {timeout: 15000});
+    
+    //await page.click('input[type="submit"]');	// Remeber user
+    await page.click('input[type="button"]');	// Don't remember user
     await browser.waitForTarget((target: puppeteer.Target) => target.url().endsWith('microsoftstream.com/'), { timeout: 150000 });
+
     logger.info('We are logged in.');
 
     let session: Session | null = null;
@@ -271,7 +304,7 @@ async function main(): Promise<void> {
 
     let session: Session;
     // eslint-disable-next-line prefer-const
-    session = tokenCache.Read() ?? await DoInteractiveLogin('https://web.microsoftstream.com/', argv.username);
+    session = tokenCache.Read() ?? await DoInteractiveLogin('https://web.microsoftstream.com/', argv.username, argv.password);
 
     logger.verbose('Session and API info \n' +
         '\t API Gateway URL: '.cyan + session.ApiGatewayUri + '\n' +
