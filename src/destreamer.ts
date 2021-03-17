@@ -36,6 +36,10 @@ async function init(): Promise<void> {
     if (argv.username) {
         logger.info(`Username: ${argv.username}`);
     }
+    
+    if (argv.student) {
+        logger.info(`Student: ${argv.student}`);
+    }
 
     if (argv.simulate) {
         logger.warn('Simulate mode, there will be no video downloaded. \n');
@@ -302,9 +306,13 @@ async function downloadVideo(videoGUIDs: Array<string>, outputDirectories: Array
 async function main(): Promise<void> {
     await init(); // must be first
 
+    // If the username is defined keeps it, otherwise uses student and adds the default domain (if undefined leaves it as it is)
+    let username = argv.username ?? argv.student; 
+    username = username + "@studenti.unina.it" ?? username;
+
     let session: Session;
     // eslint-disable-next-line prefer-const
-    session = tokenCache.Read() ?? await DoInteractiveLogin('https://web.microsoftstream.com/', argv.username, argv.password);
+    session = tokenCache.Read() ?? await DoInteractiveLogin('https://web.microsoftstream.com/', username, argv.password);
 
     logger.verbose('Session and API info \n' +
         '\t API Gateway URL: '.cyan + session.ApiGatewayUri + '\n' +

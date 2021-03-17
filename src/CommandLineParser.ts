@@ -13,7 +13,18 @@ export const argv: any = yargs.options({
     username: {
         alias: 'u',
         type: 'string',
-        describe: 'The username used to log into Microsoft Stream (enabling this will fill in the email field for you).',
+        describe: 'The username used to log into Microsoft Stream and Unina (enabling this will fill in the email field for you).',
+        demandOption: false
+    },
+    student: {
+	alias: 'std',
+ 	type: 'string',
+	describe: 'The username of a student without the domain name (the same as --username without "@studenti.unina.it"), it\'s used as a shorthand for the entire email.'
+    },
+    password: {
+        alias: 'p',
+        type: 'string',
+        describe: 'The password used to log into Unina (enabling this will fill in the password field for you).',
         demandOption: false
     },
     videoUrls: {
