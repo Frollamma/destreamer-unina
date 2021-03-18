@@ -91,7 +91,7 @@ You need to rebuild (`npm run build`) every time you change this configuration.
 To build destreamer clone this repository, install dependencies and run the build script -
 
 ```sh
-$ git clone https://github.com/snobu/destreamer
+$ git clone https://github.com/Frollamma/destreamer-unina
 $ cd destreamer
 $ npm install
 $ npm run build
@@ -105,7 +105,11 @@ $ ./destreamer.sh
 Options:
   --help                  Show help                                                                            [boolean]
   --version               Show version number                                                                  [boolean]
-  --username, -u          The username used to log into Microsoft Stream (enabling this will fill in the email field for
+  --username, -u          The username used to log into Microsoft Stream and Unina (enabling this will fill in the email field for
+                          you).                                                                                 [string]
+  --student, --std        The username of a student without the domain name (the same as --username without "@studenti.unina.it"),
+                          it's used as a shorthand for the entire email.                                         [string]
+  --password, -p          The password used to log into Unina (enabling this will fill in the password field for
                           you).                                                                                 [string]
   --videoUrls, -i         List of urls to videos or Microsoft Stream groups.                                     [array]
   --inputFile, -f         Path to text file containing URLs and optionally outDirs. See the README for more on outDirs.
@@ -135,7 +139,9 @@ Options:
 
 - both --videoUrls and --inputFile also accept Microsoft Teams Groups url so if your Organization placed the videos you are interested in a group you can copy the link and Destreamer will download all the videos it can inside it! A group url looks like this https://web.microsoftstream.com/group/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
 
-- Passing `--username` is optional. It's there to make logging in faster (the username field will be populated automatically on the login form).
+- Passing `--username` or `--student` is optional. It's there to make logging in faster (the username field will be populated automatically on the Microsoft login form).
+
+- Passing `--password` is optional. It's there to make logging in faster (the password field will be populated automatically on the Unina login form).
 
 - You can use an absolute path for `-o` (output directory), for example `/mnt/videos`.
 
