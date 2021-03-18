@@ -92,7 +92,7 @@ To build destreamer clone this repository, install dependencies and run the buil
 
 ```sh
 $ git clone https://github.com/Frollamma/destreamer-unina
-$ cd destreamer
+$ cd destreamer-unina
 $ npm install
 $ npm run build
 ```
