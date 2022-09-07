@@ -19,7 +19,8 @@ export const argv: any = yargs.options({
     student: {
 	alias: 'std',
  	type: 'string',
-	describe: 'The username of a student without the domain name (the same as --username without "@studenti.unina.it"), it\'s used as a shorthand for the entire email.'
+	describe: 'The username of a student without the domain name (the same as --username without "@studenti.unina.it"), it\'s used as a shorthand for the entire email.',
+	demandOption: false
     },
     password: {
         alias: 'p',
